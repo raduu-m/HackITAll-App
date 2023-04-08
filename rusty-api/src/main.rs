@@ -1,12 +1,18 @@
 mod api;
 mod models;
 mod repository;
+mod blockchain;
 
-use actix_web::{get,post,put,delete,App, HttpResponse, HttpServer, Responder, web::{Data, Json, Path}, Error};
+use actix_web::{get,post,put,delete,App, HttpResponse, HttpServer, Responder, web::{Data, Json, Path}};
 use repository::mongodb_repo::MongoDBRepo;
-use mongodb::bson::oid::ObjectId;
 use models::user_model::User;
 use models::transaction_model::Transaction;
+use systemstat::{Platform,System};
+use prometheus::Gauge;
+
+use std::thread;
+use std::time::Duration;
+use actix_web_prom::PrometheusMetricsBuilder;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -224,6 +230,47 @@ pub async fn revert_transaction(db:Data<MongoDBRepo>,bad_transaction:Json<Transa
 async fn main() -> std::io::Result<()> {
     let db = MongoDBRepo::init().await;
     let db_date = Data::new(db);
+
+    let sys = System::new();
+
+    let prometheus = PrometheusMetricsBuilder::new("api")
+        .endpoint("/metrics")
+        .build()
+        .unwrap();
+
+    let cpu_usage = Gauge::new("cpu_usage", "Current CPU usage in percent").unwrap();
+    let mem_usage = Gauge::new("mem_usage", "Current memory usage in percent").unwrap();
+
+    prometheus
+        .registry
+        .register(Box::new(cpu_usage.clone()))
+        .unwrap();
+
+    prometheus
+        .registry
+        .register(Box::new(mem_usage.clone()))
+        .unwrap();
+
+    thread::spawn(move || loop {
+        match sys.cpu_load_aggregate() {
+            Ok(cpu) => {
+                thread::sleep(Duration::from_secs(1));
+                let cpu = cpu.done().unwrap();
+                cpu_usage.set(f64::trunc(
+                    ((cpu.system * 100.0) + (cpu.user * 100.0)).into(),
+                ));
+            }
+            Err(x) => println!("\nCPU load: error: {}", x),
+        }
+        match sys.memory() {
+            Ok(mem) => {
+                let memory_used = mem.total.0 - mem.free.0;
+                let pourcentage_used = (memory_used as f64 / mem.total.0 as f64) * 100.0;
+                mem_usage.set(f64::trunc(pourcentage_used));
+            }
+            Err(x) => println!("\nMemory: error: {}", x),
+        }
+    });
 
     HttpServer::new(move || App::new().app_data(db_date.clone()).service(hello).service(create_user).service(delete_user).service(update_user).service(login_user)
     .service(revert_transaction).service(create_transaciton).service(sync_user).service(sync_transactions_for_id))
