@@ -126,6 +126,11 @@ export default {
           title: 'Marketplace',
           to: '/marketplace'
         },
+        {
+          icon: 'mdi mdi-shopping', //mdi-chart-bubble
+          title: 'Stock Market Sentiment Analysis',
+          to: '/stockmarketex'
+        },
       ],
       miniVariant: false,
       right: false,
