@@ -1,8 +1,11 @@
 <template>
     <v-app>
+      <div class="logo-container">
+        <img src="../assets/logo_transparent.png" height="140px" width="250px">
+      </div>
       <v-content>
         <v-container fluid fill-height>
-          <v-row align="center" justify="center">
+          <v-row align="center" justify="center" style="margin-top: -70px;">
             <v-col md="4">
               <v-card>
                 <v-card-title class="text-center">Sign Up</v-card-title>
@@ -42,7 +45,7 @@
                 </v-card-text>
               </v-card>
               <div>
-                <p>Don't have an account? <nuxt-link to="/signup">Sign up</nuxt-link></p>
+                <p>Already have an account? <nuxt-link to="/login">Log in</nuxt-link></p>
               </div>
             </v-col>
           </v-row>
@@ -112,4 +115,12 @@
     }
   }
   </script>
-  
+
+  <style>
+  .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+  }
+  </style>

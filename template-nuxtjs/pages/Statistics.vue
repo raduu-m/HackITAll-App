@@ -48,8 +48,16 @@
                 </v-row>
             </v-card-text>
         </v-card>
+        <div id="tester" style="width:600px;height:250px;"></div>
     </v-container>
 </template>
   
 <script>
+var Plotly = require('plotly.js-dist-min')
+
+export default{
+    mounted(){
+    }
+}
+
 </script>
