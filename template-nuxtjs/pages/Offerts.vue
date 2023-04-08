@@ -39,21 +39,21 @@ export default {
         return {
             shops: [
                 {
-                    name: 'Shop A',
-                    image: 'https://picsum.photos/400/300?random=1',
-                    offer: { name: 'Offer 1', price: 10 },
+                    name: 'Footshop',
+                    image:require('@/assets/item4.jpeg'),
+                    offer: { name: 'Reducere folosind codul', price: "10%" },
                     code: "UXZ-321-BZT",
                 },
                 {
-                    name: 'Shop B',
-                    image: 'https://picsum.photos/400/300?random=2',
-                    offer: { name: 'Offer 4', price: 40 },
+                    name: 'Emag',
+                    image: require('@/assets/logo-emag.png'),
+                    offer: { name: 'Reducere la electronice prin codul', price: "5%" },
                     code: "UXZ-321-BZT",
                 },
                 {
-                    name: 'Shop C',
-                    image: 'https://picsum.photos/400/300?random=3',
-                    offer: { name: 'Offer 7', price: 70 },
+                    name: 'Quickmobile  ',
+                    image: require('@/assets/quickmobile.jpg'),
+                    offer: { name: 'Reducere folosind codul', price:"10%" },
                     code: "UXZ-321-BZT",
                 }
             ],

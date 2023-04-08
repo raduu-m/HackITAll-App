@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+    <v-app dark style="background: linear-gradient(to bottom, #081B33, #0C3857);">
       <div class="logo-container">
         <img src="../assets/logo_transparent.png" height="140px" width="250px">
       </div>
