@@ -39,39 +39,39 @@
     </v-content>
   </v-app>
 </template>
-
-<script>
-  import Vue from 'vue'
-  import Vuetify from 'vuetify'
-  // import 'vuetify/dist/vuetify.min.css'
-
-  Vue.use(Vuetify)
-
-  export default {
-    layout: "no-layout",
-    data() {
-      return {
-        email: '',
-        password: '',
-      }
-    },
-    methods:{
-      submitForm(){
-        console.log('/api/user/login/' + this.email + '/' + this.password);
-        this.$axios.$post('/api/user/login/' + this.email + '/' + this.password).then((response) => {
-            // Save the response to the store
-            localStorage.setItem('user', JSON.stringify({
-              id: response.id,
-              name: response.name,
-              email: response.email,
-              password: response.password,
-              balance: response.balance,
-            }))
-            // Redirect to the home page
-            this.$router.push('/')
-          }).catch(error => {
-            console.log(error);
-          })
+  <script>
+    import Vue from 'vue'
+    import Vuetify from 'vuetify'
+    // import 'vuetify/dist/vuetify.min.css'
+  
+    Vue.use(Vuetify)
+  
+    export default {
+      layout: "no-layout",
+      data() {
+        return {
+          email: '',
+          password: '',
+        }
+      },
+      methods:{
+        submitForm(){
+          console.log('/api/user/login/' + this.email + '/' + this.password);
+          this.$axios.$post('/api/user/login/' + this.email + '/' + this.password).then((response) => {
+              // Save the response to the store
+              localStorage.setItem('user', JSON.stringify({
+                id: response.id,
+                name: response.name,
+                email: response.email,
+                password: response.password,
+                balance: response.balance,
+              }))
+              // Redirect to the home page
+              this.$router.push('/')
+            }).catch(error => {
+              console.log(error);
+            })
+        }
       }
     }
   }

@@ -36,7 +36,6 @@
     </v-card>
   </v-app>
 </template>
-
   
 <script>
 import axios from 'axios'
@@ -117,7 +116,7 @@ export default {
   }
 }
 </script>
-  
+
 <style scoped>
 .message-bubble {
   max-width:100%;
@@ -148,3 +147,10 @@ export default {
 }
 </style>
   
+=======
+  
+<style scoped>
+.blue-grey {
+  background-color: #B0BEC5 !important;
+}
+</style>

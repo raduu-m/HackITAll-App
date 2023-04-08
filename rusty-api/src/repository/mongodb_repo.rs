@@ -3,6 +3,7 @@ extern crate dotenv;
 use actix_web::Error;
 use dotenv::dotenv;
 
+use futures::TryStreamExt;
 use mongodb::{
     bson::{doc, oid::ObjectId, Bson},
     options::{ClientOptions, FindOneOptions, FindOptions, UpdateOptions, Collation},
@@ -10,9 +11,11 @@ use mongodb::{
 };
 
 use crate::models::user_model::User;
+use crate::models::transaction_model::Transaction;
 
 pub struct MongoDBRepo {
     col: Collection<User>,
+    col_transaction: Collection<Transaction>
 }
 
 impl MongoDBRepo {
@@ -25,7 +28,8 @@ impl MongoDBRepo {
         let client = Client::with_uri_str(&mongo_uri).await.unwrap();
         let db = client.database("db-hack");
         let col: Collection<User> = db.collection("users");
-        MongoDBRepo { col }
+        let col_transaction: Collection<Transaction> = db.collection("transactions");
+        MongoDBRepo { col, col_transaction }
     }
 
     pub async fn get_user(&self, user:User) -> Result<Option<User>,Error>{
@@ -36,7 +40,20 @@ impl MongoDBRepo {
             password: user.password,
             balance: user.balance,
         };
-        let filter = doc! {"id":new_doc.id ,"email": new_doc.email, "password": new_doc.password};
+        let filter = doc! {"email": new_doc.email, "password": new_doc.password};
+        let user = self
+            .col
+            .find_one(filter, None)
+            .await
+            .ok()
+            .expect("Error finding user");
+        Ok(user)
+    }
+
+
+    pub async fn get_user_from_id(&self, id_user:String) -> Result<Option<User>,Error>{
+
+        let filter = doc! {"id":id_user};
         let user = self
             .col
             .find_one(filter, None)
@@ -69,7 +86,7 @@ impl MongoDBRepo {
         let new_doc = doc! {"$set": {
             "name": new_user.name,
             "email": new_user.email,
-            "password": new_user.password,
+            "balance": new_user.balance,
         }};
         let update_doc = self
             .col
@@ -79,6 +96,23 @@ impl MongoDBRepo {
             .expect("Error updating user");
         Ok(update_doc)
     }
+
+
+    pub async fn update_user_balance(&self, id:&String, new_balance:f64)->Result<UpdateResult, Error>{
+        let obj_id = id;
+        let filter = doc! {"id": obj_id};
+        let new_doc = doc! {"$set": {
+            "balance": new_balance
+        }};
+        let update_doc = self
+            .col
+            .update_one(filter, new_doc, None)
+            .await
+            .ok()
+            .expect("Error updating balance");
+        Ok(update_doc)
+    }
+
 
     pub async fn delete_user(&self, id:&String)->Result<DeleteResult, Error>{
         let obj_id = id;
@@ -91,4 +125,109 @@ impl MongoDBRepo {
             .expect("Error deleting user");
         Ok(update_doc)
     }
+
+
+    pub async fn create_transaciton(&self, new_transaction:Transaction) -> Result<InsertOneResult,Error>{
+        let new_doc = Transaction {
+            id: None,
+            timestamp: new_transaction.timestamp,
+            t1_id: new_transaction.t1_id,
+            t2_id: new_transaction.t2_id,
+            ammount: new_transaction.ammount,
+        };
+        let transaction = self
+            .col_transaction
+            .insert_one(new_doc, None)
+            .await
+            .ok()
+            .expect("Error creating transaction");
+        Ok(transaction)
+    }
+
+    pub async fn revert_transaction(&self, bad_transaction:Transaction)->Result<InsertOneResult, Error>{
+        let new_doc = Transaction {
+            id: None,
+            timestamp: String::from("Hello, world!"),
+            t1_id: bad_transaction.t2_id,
+            t2_id: bad_transaction.t1_id,
+            ammount: bad_transaction.ammount,
+        };
+        let transaction = self
+            .col_transaction
+            .insert_one(new_doc, None)
+            .await
+            .ok()
+            .expect("Error reverting transaction");
+        Ok(transaction)
+    }
+
+
+    pub async fn get_sent_transaction(&self, id_user:String) -> Result<Vec<Transaction>,Error>{
+
+        let mut cursor = self.col_transaction.find(doc! {"t1_id":id_user}, None).await.unwrap();
+
+        
+       
+        let mut elements = Vec::new();
+        loop{
+            let doc = cursor.try_next().await;
+            
+                match doc{
+                    Ok(docu) => {
+                            match docu {
+                                Some(d) => {elements.push(d)},
+                                None => return  Ok(elements)
+                            }
+                    },
+                    Err(_e) => return Ok(elements)
+                }
+        }
+        // while let doc = cursor.try_next().await{
+        //     match doc{
+        //         Ok(docu) => {
+        //                 match docu {
+        //                     Some(d) => {elements.push(d)},
+        //                     None => ()
+        //                 }
+        //         },
+        //         Err(e) => ()
+        //     }
+        // }
+    //    Ok(elements)
+    }
+
+
+    pub async fn get_received_transaction(&self, id_user:String) -> Result<Vec<Transaction>,Error>{
+
+        let mut cursor = self.col_transaction.find(doc! {"t2_id":id_user}, None).await.unwrap();
+
+        let mut elements = Vec::new();
+    //     while let doc = cursor.try_next().await{
+    //         match doc{
+    //             Ok(docu) => {
+    //                     match docu {
+    //                         Some(d) => {elements.push(d)},
+    //                         None => ()
+    //                     }
+    //             },
+    //             Err(e) => ()
+    //         }
+    //     }
+    //    Ok(elements)
+
+    loop{
+        let doc = cursor.try_next().await;
+        
+            match doc{
+                Ok(docu) => {
+                        match docu {
+                            Some(d) => {elements.push(d)},
+                            None => return Ok(elements)
+                        }
+                },
+                Err(_e) => return Ok(elements)
+            }
+    }
+    }
+
 }

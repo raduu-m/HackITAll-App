@@ -10,7 +10,14 @@
               <v-card>
                 <v-card-title class="text-center">Sign Up</v-card-title>
                 <v-card-text>
-                  <v-form>
+                  <v-form @submit.prevent="submitForm">
+                    <v-text-field
+                      v-model="id"
+                      label="ID Student"
+                      prepend-icon="mdi-account"
+                      type="id"
+                      required
+                    ></v-text-field>
                     <v-text-field
                       v-model="name"
                       label="Name"
@@ -32,11 +39,10 @@
                       type="password"
                       required
                     ></v-text-field>
+                    <!-- Make the button full like the card -->
+                    <v-btn color="primary" block type="submit">Sign up</v-btn>
                   </v-form>
                 </v-card-text>
-                <v-card-actions>
-                  <v-btn color="primary" block>Login</v-btn>
-                </v-card-actions>
               </v-card>
               <div>
                 <p>Already have an account? <nuxt-link to="/login">Log in</nuxt-link></p>
@@ -58,12 +64,56 @@
       layout: "no-layout",
       data() {
         return {
+          name: '',
+          id: '',
           email: '',
           password: '',
         }
       },
-      
+      methods:{
+        submitForm(){
+          try{
+            // send data as json
+            const response = this.$axios.$post('/api/user', JSON.stringify(
+              {
+                id: this.id,
+                name: this.name,
+                email: this.email,
+                password: this.password,
+                balance: 0.0
+              }
+            ), {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            console.log(
+              JSON.stringify(
+                {
+                  name: this.name,
+                  id: this.id,
+                  email: this.email,
+                  password: this.password
+                }
+              )
+            )
+            // Store this in local storage
+            localStorage.setItem('user', JSON.stringify({
+                id: this.id,
+                name: this.name,
+                email: this.email,
+                password: this.password,
+                balance: 0.0
+              }))
+
+            // Redirect to the home page
+            this.$router.push('/')
+          }catch(err){
+            console.log(err)
+          }
+      }
     }
+  }
   </script>
 
   <style>

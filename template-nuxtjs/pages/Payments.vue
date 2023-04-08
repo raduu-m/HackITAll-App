@@ -97,11 +97,7 @@ export default {
       paymentNote: '',
     };
   },
-  methods: {
-    pay() {
-      // Implement payment API call here
-    },
-  },
+
   watch: {
     selectedCategory(newValue) {
       if (newValue === 'Restante' || newValue === 'Campus') {
@@ -115,6 +111,72 @@ export default {
         this.paymentNote = '';
         this.selectedPaymentType = '';
       }
+    },
+
+    methods: {
+      pay() {
+        // Implement payment API call here
+        const uid = JSON.parse(localStorage.getItem("user")).id;
+        try{
+            // send data as json
+            const transaction_j =  {
+                id: "",
+                t1_id: uid,
+                t2_id: this.studentId,
+                ammount: this.amount,
+                timestamp: "2023020200"
+              };
+
+            const response = this.$axios.$post('/api/transaction', JSON.stringify(
+              {
+                id: "",
+                t1_id: uid,
+                t2_id: this.studentId,
+                ammount: parseFloat(this.amount),
+                timestamp: "2023020200"
+              }
+            ), {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            console.log(
+              JSON.stringify(
+                {
+                  transaction_j
+                }
+              )
+            )
+            // Store this in local storage
+            // const arr = JSON.parse(localStorage.getItem('transactions')) || [];
+            // arr.push(transaction_j);
+            // localStorage.setItem(JSON.stringify('transactions', arr))
+
+            this.$axios.$get('/api/user/'+ uid).then((response) => {
+              // Save the response to the store
+              localStorage.setItem('user', JSON.stringify({
+                id: response.id,
+                name: response.name,
+                email: response.email,
+                password: response.password,
+                balance: response.balance,
+              })) // Redirect to the home page
+              this.$router.push('/')
+            }).catch(error => {
+              console.log(error);
+            })
+        
+            
+
+
+            // Redirect to the home page
+            this.$router.push('/')
+            
+          }catch(err){
+            console.log(err)
+          }
+
+      },
     },
   },
 };
