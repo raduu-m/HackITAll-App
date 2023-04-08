@@ -18,13 +18,21 @@
           </v-list-item>
         </v-list>
       </v-card-text>
-      <v-card-actions>
-        <v-form @submit.prevent="sendMessage">
-          <v-textarea v-model="messageContent" label="Type your message here" :rows="1" auto-grow clearable outlined dense
-            required></v-textarea>
-          <v-btn color="primary" type="submit" :disabled="!messageContent.trim()">Send</v-btn>
+      <div style="display: flex; align-items: center; position: absolute; bottom: 0; width: 95%; margin-left: 10px;">
+        <v-form @submit.prevent="sendMessage" style="flex: 1;">
+          <v-textarea
+            v-model="messageContent"
+            label="Type your message here"
+            :rows="1"
+            auto-grow
+            clearable
+            outlined
+            dense
+            required
+          ></v-textarea>
         </v-form>
-      </v-card-actions>
+        <v-btn color="primary" type="submit" :disabled="!messageContent.trim()" style="margin-left: 16px; margin-bottom:25px" @click="sendMessage">Send</v-btn>
+      </div>
     </v-card>
   </v-app>
 </template>
