@@ -22,10 +22,11 @@
                       type="password"
                       required
                     ></v-text-field>
+                    <button type="submit" color="primary" >Login</button>
                   </v-form>
                 </v-card-text>
                 <v-card-actions>
-                  <v-btn color="primary" block>Login</v-btn>
+              
                 </v-card-actions>
               </v-card>
               <div>
