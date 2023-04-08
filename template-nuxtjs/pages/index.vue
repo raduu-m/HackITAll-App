@@ -36,6 +36,9 @@ export default {
       this.username = user.name
       this.balance = user.balance
     }
+    else{
+      this.$router.push('/login')
+    }
   }, 
   data() {
     return {
