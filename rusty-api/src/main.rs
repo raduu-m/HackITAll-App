@@ -2,10 +2,11 @@ mod api;
 mod models;
 mod repository;
 
-use actix_web::{get,post,put,delete,App, HttpResponse, HttpServer, Responder, web::{Data, Json, Path}};
+use actix_web::{get,post,put,delete,App, HttpResponse, HttpServer, Responder, web::{Data, Json, Path}, Error};
 use repository::mongodb_repo::MongoDBRepo;
 use mongodb::bson::oid::ObjectId;
 use models::user_model::User;
+use models::transaction_model::Transaction;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -80,6 +81,7 @@ pub async fn update_user(db:Data<MongoDBRepo>,path:Path<String>,new_user:Json<Us
     }
 }
 
+
 #[delete("/user/{id}")]
 pub async fn delete_user(db:Data<MongoDBRepo>,path:Path<String>) -> impl Responder{
     let id = path.into_inner();
@@ -90,12 +92,94 @@ pub async fn delete_user(db:Data<MongoDBRepo>,path:Path<String>) -> impl Respond
     }
 }
 
+#[post("/transaction")]
+async fn create_transaciton(db: Data<MongoDBRepo>, new_transaction: Json<Transaction>) -> impl Responder {
+    let data = Transaction{
+        id: None,
+        timestamp: new_transaction.timestamp.to_owned(),
+        t1_id: new_transaction.t1_id.to_owned(),
+        t2_id: new_transaction.t2_id.to_owned(),
+        ammount: new_transaction.ammount.to_owned()
+    };
+    let id_clone = data.t1_id.clone();
+   
+    let user_details = db.get_user_from_id(id_clone).await;
+    let user_receiving_details = db.get_user_from_id(data.t2_id.clone()).await;
+
+
+    match user_receiving_details{
+        Ok(user_r) => 
+            match user_r{
+                Some(u_r) => { 
+                    match user_details{
+                        Ok(user) => {
+                            match user{
+                                Some(u) => 
+                                    if(u.balance - data.ammount >= 0.0){
+                                        let res = db.update_user_balance(&u.id,u.balance - data.ammount ).await;
+                                        let res_receiving = db.update_user_balance(&u_r.id, u_r.balance + data.ammount).await;
+                                        match res_receiving{
+                                            Ok(_update) => 
+
+                                            match res{
+                                                Ok(_u) => {
+                                                    let transaction_details = db.create_transaciton(data).await;
+                                                
+                                                    match transaction_details {
+                                                        Ok(transaction) => return HttpResponse::Ok().json(transaction),
+                                                        Err(e) => return HttpResponse::InternalServerError().json(e.to_string()),
+                                                    }},
+                                                Err(e)  => return HttpResponse::InternalServerError().json(e.to_string())
+                                            }
+
+                                            ,
+                                            Err(e) => return HttpResponse::InternalServerError().json(e.to_string())
+                                        }
+
+                                    }else{
+                                        return HttpResponse::InternalServerError().json("insufficient funds".to_string())
+                                    }
+                                None => return HttpResponse::InternalServerError().json("no user to transfer from ".to_string())    
+                            }
+                    
+                        },
+                        Err(e) => return HttpResponse::InternalServerError().json(e.to_string())
+                        
+                    }
+                },
+                None => HttpResponse::InternalServerError().json("no user to transfer to ".to_string())  
+            }
+
+        Err(e) => HttpResponse::InternalServerError().json(e.to_string())
+    }
+
+}
+
+#[put("/transactionx/")]
+pub async fn revert_transaction(db:Data<MongoDBRepo>,bad_transaction:Json<Transaction>)->impl Responder{
+    let data = Transaction{
+        id: None,
+        timestamp: bad_transaction.timestamp.to_owned(),
+        t1_id: bad_transaction.t1_id.to_owned(),
+        t2_id: bad_transaction.t2_id.to_owned(),
+        ammount: bad_transaction.ammount.to_owned()
+    };
+    let transaction_details = db.revert_transaction(data).await;
+    match transaction_details {
+        Ok(transaction) => HttpResponse::Ok().json(transaction),
+        Err(e) => HttpResponse::InternalServerError().json(e.to_string()),
+    }
+}
+
+
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let db = MongoDBRepo::init().await;
     let db_date = Data::new(db);
-    HttpServer::new(move || App::new().app_data(db_date.clone()).service(hello).service(create_user).service(delete_user).service(update_user).service(login_user))
+
+    HttpServer::new(move || App::new().app_data(db_date.clone()).service(hello).service(create_user).service(delete_user).service(update_user).service(login_user)
+    .service(revert_transaction).service(create_transaciton))
         .bind(("localhost", 8080))?
         .run()
         .await
