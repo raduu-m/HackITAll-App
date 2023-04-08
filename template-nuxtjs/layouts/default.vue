@@ -138,6 +138,11 @@ export default {
           title: 'Statistics',
           to: '/statistics'
         },
+        {
+          icon: 'mdi mdi-shopping', //mdi-chart-bubble
+          title: 'Stock Market Sentiment Analysis',
+          to: '/stockmarketex'
+        },
       ],
       miniVariant: false,
       right: false,
