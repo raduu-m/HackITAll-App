@@ -14,16 +14,33 @@
           :to="item.to"
           router
           exact
+          v-if="item.title !== 'logout'"
         >
           <v-list-item-action>
-            <!-- <v-icon>{{ item.icon }}</v-icon> -->
+            <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-else @click="logout()">
+          <v-list-item-action>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
+      <v-btn  @click="logout()"  icon class="logout-button mx-2" style=" position: absolute;
+      bottom: 0;
+      left: 30%;
+      margin-bottom:20px;">
+      <v-icon >mdi-logout</v-icon>
+        Log out
+      </v-btn>
     </v-navigation-drawer>
+
     <v-app-bar
       :clipped-left="clipped"
       fixed
@@ -69,6 +86,7 @@
   </v-app>
 </template>
 
+
 <script>
 export default {
   name: 'DefaultLayout',
@@ -79,14 +97,24 @@ export default {
       fixed: false,
       items: [
         {
-          icon: 'mdi-apps',
+          icon: 'mdi-home',
           title: 'Home',
           to: '/'
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Login',
-          to: '/login'
+          icon: 'mdi mdi-account', //mdi-chart-bubble
+          title: 'My Profile',
+          to: '/profile'
+        },
+        {
+          icon: 'mdi mdi-credit-card-outline', //mdi-chart-bubble
+          title: 'Payments',
+          to: '/payments'
+        },
+        {
+          icon: 'mdi mdi-forum-outline', //mdi-chart-bubble
+          title: 'Gheorghe',
+          to: '/assistent'
         }
       ],
       miniVariant: false,
@@ -94,6 +122,14 @@ export default {
       rightDrawer: false,
       title: 'StudentSpend'
     }
+  },
+  methods: {
+    logout() {
+      localStorage.clear();
+      this.$router.push('/login');
+      
+    }
   }
+
 }
 </script>
