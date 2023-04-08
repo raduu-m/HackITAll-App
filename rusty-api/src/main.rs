@@ -95,6 +95,50 @@ pub async fn delete_user(db:Data<MongoDBRepo>,path:Path<String>) -> impl Respond
     }
 }
 
+#[get("/user/{id}")]
+async fn sync_user(db: Data<MongoDBRepo>,path:Path<(String)>) -> impl Responder{
+    // Get the email and password from the path
+    let (uid) = path.into_inner();
+    println!("user id : {}",uid);
+
+    let user_details = db.get_user_from_id(uid).await;
+    match user_details {
+        Ok(user) => HttpResponse::Ok().json(user),
+        Err(e) => HttpResponse::InternalServerError().json(e.to_string()),
+    }
+}
+
+
+#[get("/user/transactions/{id}")]
+async fn sync_transactions_for_id(db: Data<MongoDBRepo>,path:Path<(String)>) -> impl Responder{
+    // Get the email and password from the path
+    let (uid) = path.into_inner();
+    println!("user id : {}",uid);
+
+    //let mut transactions Vec::new();
+
+    let res_received = db.get_received_transaction(uid.clone()).await;
+    let res_sent = db.get_sent_transaction(uid.clone()).await;
+
+    println!("R{:?}",res_received);
+    println!("S{:?}",res_sent);
+
+
+    match res_received {
+        Ok(t_received) => match res_sent{
+            Ok(t_sent) => {
+                let transactions: Vec<Transaction> = t_received.into_iter().chain(t_sent.into_iter()).collect();
+                // println!("T_SENT {:?}",transactions);
+                
+                HttpResponse::Ok().json(transactions)
+            },
+            Err(e) => HttpResponse::InternalServerError().json(e.to_string())
+        },
+        Err(e) => HttpResponse::InternalServerError().json(e.to_string()),
+    }
+}
+
+
 #[post("/transaction")]
 async fn create_transaciton(db: Data<MongoDBRepo>, new_transaction: Json<Transaction>) -> impl Responder {
     let data = Transaction{
@@ -182,7 +226,7 @@ async fn main() -> std::io::Result<()> {
     let db_date = Data::new(db);
 
     HttpServer::new(move || App::new().app_data(db_date.clone()).service(hello).service(create_user).service(delete_user).service(update_user).service(login_user)
-    .service(revert_transaction).service(create_transaciton))
+    .service(revert_transaction).service(create_transaciton).service(sync_user).service(sync_transactions_for_id))
         .bind(("localhost", 8080))?
         .run()
         .await
