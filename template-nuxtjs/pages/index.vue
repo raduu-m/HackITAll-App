@@ -91,21 +91,7 @@ export default {
       }).catch(error => {
         console.log(error);
       })
-    }
-  },
-  data() {
-
-
-
-    return {
-      username: '',
-      balance: 0.0,
-      transactions: [],
-      activeIndex: -1,
-      transactionDetails: {}
-    }
-  },
-  methods: {
+    },
     viewTransaction(index) {
       this.activeIndex = index;
       this.transactionDetails = this.transactions[index];
@@ -114,6 +100,15 @@ export default {
       this.activeIndex = -1;
       this.transactionDetails = {};
     }
-  }
+  },
+  data() {
+    return {
+      username: '',
+      balance: 0.0,
+      transactions: [],
+      activeIndex: -1,
+      transactionDetails: {}
+    }
+  },
 }
 </script> 
