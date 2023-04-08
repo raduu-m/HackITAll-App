@@ -115,7 +115,17 @@ export default {
           icon: 'mdi mdi-forum-outline', //mdi-chart-bubble
           title: 'Gheorghe',
           to: '/assistent'
-        }
+        },
+        {
+          icon: 'mdi mdi-credit-card-outline', //mdi-chart-bubble
+          title: 'Offers',
+          to: '/offerts'
+        },
+        {
+          icon: 'mdi mdi-shopping', //mdi-chart-bubble
+          title: 'Marketplace',
+          to: '/marketplace'
+        },
       ],
       miniVariant: false,
       right: false,
