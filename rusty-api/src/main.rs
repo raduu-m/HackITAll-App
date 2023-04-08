@@ -12,15 +12,18 @@ async fn hello() -> impl Responder {
     HttpResponse::Ok().json("Hello from rust and mongoDB")
 }
 
-#[post("/user/login/{id}")]
-async fn login_user(db: Data<MongoDBRepo>,path:Path<String> ,user: Json<User>) -> impl Responder{
-    let id = path.into_inner();
+#[post("/user/login/{email}/{password}")]
+async fn login_user(db: Data<MongoDBRepo>,path:Path<(String,String)>) -> impl Responder{
+    // Get the email and password from the path
+    let (email,password) = path.into_inner();
+    println!("Email : {}",email);
+    println!("Password :{}",password);
     let data = User{
-        id: id,
-        name: user.name.to_owned(),
-        email: user.email.to_owned(),
-        password: hashPassword(user.password.to_owned()),
-        balance: user.balance,
+        id: "none".to_owned(),
+        name: "none".to_owned(),
+        email: email.to_owned(),
+        password: hashPassword(password.to_owned()),
+        balance: 0.0,
     };
     let user_details = db.get_user(data).await;
     match user_details {

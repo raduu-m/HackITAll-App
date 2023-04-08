@@ -29,10 +29,18 @@
 <script>
 export default {
   name: 'Home',
+  mounted() {
+    // Get from the local storage
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (user) {
+      this.username = user.name
+      this.balance = user.balance
+    }
+  }, 
   data() {
     return {
-      username: 'John Doe',
-      balance: 5000,
+      username: '',
+      balance: 0.0,
       transactions: [
         { title: 'Payment Received', date: 'April 1, 2023' },
         { title: 'Payment Sent', date: 'March 28, 2023' },

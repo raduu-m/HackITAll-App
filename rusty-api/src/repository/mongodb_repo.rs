@@ -36,7 +36,7 @@ impl MongoDBRepo {
             password: user.password,
             balance: user.balance,
         };
-        let filter = doc! {"id":new_doc.id ,"email": new_doc.email, "password": new_doc.password};
+        let filter = doc! {"email": new_doc.email, "password": new_doc.password};
         let user = self
             .col
             .find_one(filter, None)
@@ -69,7 +69,7 @@ impl MongoDBRepo {
         let new_doc = doc! {"$set": {
             "name": new_user.name,
             "email": new_user.email,
-            "password": new_user.password,
+            "balance": new_user.balance,
         }};
         let update_doc = self
             .col
