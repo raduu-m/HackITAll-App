@@ -4,7 +4,7 @@
       <v-card class="mx-auto" max-width="400" @click="activate">
         <!--Create a card with the QR code-->
         <v-card class="mx-auto" max-width="400" @click="activate">
-          <v-card-title class="text-h5">QRCode</v-card-title>
+          <v-card-title class="text-h5">{{ name }}</v-card-title>
           <v-img>
             <!--Center the canvas-->
             <div class="d-flex justify-center">
