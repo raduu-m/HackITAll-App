@@ -1,11 +1,12 @@
 <template>
-  <v-app dark>
+  <v-app dark style="background: linear-gradient(to bottom, #081B33, #0C3857);">
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
       :clipped="clipped"
       fixed
       app
+      style="background-color: rgba(8, 27, 51, 0.9);"
     >
       <v-list>
         <v-list-item
@@ -32,11 +33,13 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-btn  @click="logout()"  icon class="logout-button mx-2" style=" position: absolute;
-      bottom: 0;
-      left: 30%;
-      margin-bottom:20px;">
-      <v-icon >mdi-logout</v-icon>
+      <v-btn
+        @click="logout()"
+        icon
+        class="logout-button mx-2"
+        style="position: absolute; bottom: 0; left: 30%; margin-bottom: 20px;"
+      >
+        <v-icon>mdi-logout</v-icon>
         Log out
       </v-btn>
     </v-navigation-drawer>
@@ -45,6 +48,7 @@
       :clipped-left="clipped"
       fixed
       app
+      style="background-color: rgba(8, 27, 51, 0.6);"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> 
       <v-btn
@@ -53,7 +57,9 @@
       >
         <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-      <v-toolbar-title class="flex text-center">{{ title }}</v-toolbar-title>
+      <v-toolbar-title class="flex text-center" style="position: absolute; left: 50%; transform: translateX(-50%);">
+        <img src="../assets/logo_cut.png" height="50" alt="Logo" style=" margin-top: 10px;" />
+      </v-toolbar-title>
       <v-spacer />
     </v-app-bar>
     <v-main>
@@ -85,6 +91,7 @@
     </v-footer>
   </v-app>
 </template>
+
 
 
 <script>
@@ -127,9 +134,14 @@ export default {
           to: '/marketplace'
         },
         {
-          icon: 'mdi mdi-shopping', //mdi-chart-bubble
+          icon: 'mdi mdi-chart-bar', //mdi-chart-bubble
           title: 'Statistics',
           to: '/statistics'
+        },
+        {
+          icon: 'mdi mdi-shopping', //mdi-chart-bubble
+          title: 'Stock Market Sentiment Analysis',
+          to: '/stockmarketex'
         },
       ],
       miniVariant: false,
@@ -148,3 +160,14 @@ export default {
 
 }
 </script>
+
+<style>
+  .v-navigation-drawer, .v-app-bar {
+    
+    color: white;
+  }
+  
+  .v-list-item-title {
+    font-weight: bold;
+  }
+</style>
