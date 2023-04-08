@@ -64,9 +64,16 @@ vuetify: {
             darken3: '#ff6200'
           },
           tertiary: {
-            base: '#4682bf',
-            lighten3: '#4696bf',
-            darken3: '#466ebf'
+            background: '#FFFFFF',
+            surface: '#FFFFFF',
+            primary: '#6200EE',
+            'primary-darken-1': '#3700B3',
+            secondary: '#03DAC6',
+            'secondary-darken-1': '#018786',
+            error: '#B00020',
+            info: '#2196F3',
+            success: '#4CAF50',
+            warning: '#FB8C00',
           },
           accent: '#9c27b0'
         }
