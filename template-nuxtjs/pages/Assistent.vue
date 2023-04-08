@@ -1,21 +1,18 @@
 <template>
   <v-app>
-    <v-card class="elevation-12" style="; margin: 50px auto; height: 700px;  max-width: 100%;
-            width: 800px;
-            margin: 0 auto;">
+    <v-card class="elevation-12" style=" height: 750px; max-width: 100%; width: 800px;">
       <v-toolbar color="primary" dark>
-        <v-toolbar-title>AI Assistant Chat</v-toolbar-title>
+        <v-toolbar-title>Gheorghe</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-toolbar>
-      <v-card-text style="height: 450px; overflow-y: scroll;">
+      <v-card-text style="height: 350px; overflow-y:auto;">
         <v-list>
           <v-list-item v-for="(message, index) in messages" :key="index">
             <v-list-item-content>
-              <v-card class="pa-2"
-                :class="{ 'blue-grey': message.sender === 'bot', 'green lighten-3': message.sender === 'user' }">
-                <v-card-title v-if="message.sender === 'bot'" class="text-h6">AI Assistant:</v-card-title>
+              <v-card class="pa-2" :class="{ 'blue-grey': message.sender === 'bot', 'green lighten-3': message.sender === 'user' }">
+                <v-card-title v-if="message.sender === 'bot'" class="text-h6">Gheorghe:</v-card-title>
                 <v-card-title v-else class="text-h6">You:</v-card-title>
-                <v-card-text style="width: 100% margin: 50px auto">{{ message.content }}</v-card-text>
+                <v-card-text style="width: 100%; margin: 50px auto;">{{ message.content }}</v-card-text>
               </v-card>
             </v-list-item-content>
           </v-list-item>

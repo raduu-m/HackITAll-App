@@ -3,8 +3,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - my-template2',
-    title: 'my-template2',
+    // titleTemplate: '%s - my-template2'
+    title: 'Student Spend',
     htmlAttrs: {
       lang: 'en'
     },
@@ -52,19 +52,23 @@ export default {
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
-  vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+vuetify: {
     theme: {
       dark: true,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          primary: '#4caf50',
+          secondary: {
+            base: '#ff8c00',
+            lighten3: '#ffb700',
+            darken3: '#ff6200'
+          },
+          tertiary: {
+            base: '#4682bf',
+            lighten3: '#4696bf',
+            darken3: '#466ebf'
+          },
+          accent: '#9c27b0'
         }
       }
     }

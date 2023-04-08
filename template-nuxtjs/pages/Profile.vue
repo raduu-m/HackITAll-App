@@ -16,7 +16,7 @@
           <!--Disable the underline for text field-->
           <v-text-field readonly label="Name" v-model="name"></v-text-field>
           <v-text-field readonly label="Account ID" v-model="accountId"></v-text-field>
-          <v-text-field readonly label="Balance" v-model="balance"></v-text-field>
+          <v-text-field readonly label="Balance (LEI)" v-model="balance"></v-text-field>
         </v-card-text>
       </v-card>
     </v-container>

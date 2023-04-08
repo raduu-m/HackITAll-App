@@ -2,7 +2,7 @@
   <v-container>
     <h1>Welcome, {{ username }}</h1>
     <v-card>
-      <v-card-title>Balance</v-card-title>
+      <v-card-title>Balance (LEI)</v-card-title>
       <v-card-text>
         <h2>{{ balance }}</h2>
       </v-card-text>
