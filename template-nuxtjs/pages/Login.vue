@@ -7,7 +7,7 @@
               <v-card>
                 <v-card-title class="text-center">Login</v-card-title>
                 <v-card-text>
-                  <v-form>
+                  <v-form @submit.prevent="submitForm">
                     <v-text-field
                       v-model="email"
                       label="Email"
@@ -22,12 +22,10 @@
                       type="password"
                       required
                     ></v-text-field>
-                    <button type="submit" color="primary" >Login</button>
+                    <!-- Make the button full like the card -->
+                    <v-btn color="primary" block type="submit">Login</v-btn>
                   </v-form>
                 </v-card-text>
-                <v-card-actions>
-              
-                </v-card-actions>
               </v-card>
               <div>
                 <p>Don't have an account? <nuxt-link to="/signup">Sign up</nuxt-link></p>
@@ -54,7 +52,25 @@
           password: '',
         }
       },
-      
+      methods:{
+        submitForm(){
+          console.log('/api/user/login/' + this.email + '/' + this.password);
+          this.$axios.$post('/api/user/login/' + this.email + '/' + this.password).then((response) => {
+              // Save the response to the store
+              localStorage.setItem('user', JSON.stringify({
+                id: response.id,
+                name: response.name,
+                email: response.email,
+                password: response.password,
+                balance: response.balance,
+              }))
+              // Redirect to the home page
+              this.$router.push('/')
+            }).catch(error => {
+              console.log(error);
+            })
+        }
+      }
     }
   </script>
   
