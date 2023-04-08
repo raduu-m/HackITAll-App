@@ -3,6 +3,7 @@ extern crate dotenv;
 use actix_web::Error;
 use dotenv::dotenv;
 
+use futures::TryStreamExt;
 use mongodb::{
     bson::{doc, oid::ObjectId, Bson},
     options::{ClientOptions, FindOneOptions, FindOptions, UpdateOptions, Collation},
@@ -159,4 +160,74 @@ impl MongoDBRepo {
             .expect("Error reverting transaction");
         Ok(transaction)
     }
+
+
+    pub async fn get_sent_transaction(&self, id_user:String) -> Result<Vec<Transaction>,Error>{
+
+        let mut cursor = self.col_transaction.find(doc! {"t1_id":id_user}, None).await.unwrap();
+
+        
+       
+        let mut elements = Vec::new();
+        loop{
+            let doc = cursor.try_next().await;
+            
+                match doc{
+                    Ok(docu) => {
+                            match docu {
+                                Some(d) => {elements.push(d)},
+                                None => return  Ok(elements)
+                            }
+                    },
+                    Err(_e) => return Ok(elements)
+                }
+        }
+        // while let doc = cursor.try_next().await{
+        //     match doc{
+        //         Ok(docu) => {
+        //                 match docu {
+        //                     Some(d) => {elements.push(d)},
+        //                     None => ()
+        //                 }
+        //         },
+        //         Err(e) => ()
+        //     }
+        // }
+    //    Ok(elements)
+    }
+
+
+    pub async fn get_received_transaction(&self, id_user:String) -> Result<Vec<Transaction>,Error>{
+
+        let mut cursor = self.col_transaction.find(doc! {"t2_id":id_user}, None).await.unwrap();
+
+        let mut elements = Vec::new();
+    //     while let doc = cursor.try_next().await{
+    //         match doc{
+    //             Ok(docu) => {
+    //                     match docu {
+    //                         Some(d) => {elements.push(d)},
+    //                         None => ()
+    //                     }
+    //             },
+    //             Err(e) => ()
+    //         }
+    //     }
+    //    Ok(elements)
+
+    loop{
+        let doc = cursor.try_next().await;
+        
+            match doc{
+                Ok(docu) => {
+                        match docu {
+                            Some(d) => {elements.push(d)},
+                            None => return Ok(elements)
+                        }
+                },
+                Err(_e) => return Ok(elements)
+            }
+    }
+    }
+
 }
