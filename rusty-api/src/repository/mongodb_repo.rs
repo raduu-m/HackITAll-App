@@ -34,6 +34,7 @@ impl MongoDBRepo {
             name: user.name,
             email: user.email,
             password: user.password,
+            balance: user.balance,
         };
         let filter = doc! {"id":new_doc.id ,"email": new_doc.email, "password": new_doc.password};
         let user = self
@@ -51,6 +52,7 @@ impl MongoDBRepo {
             name: new_user.name,
             email: new_user.email,
             password: new_user.password,
+            balance: 0.0,
         };
         let user = self
             .col

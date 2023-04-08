@@ -20,6 +20,7 @@ async fn login_user(db: Data<MongoDBRepo>,path:Path<String> ,user: Json<User>) -
         name: user.name.to_owned(),
         email: user.email.to_owned(),
         password: hashPassword(user.password.to_owned()),
+        balance: user.balance,
     };
     let user_details = db.get_user(data).await;
     match user_details {
@@ -53,6 +54,7 @@ async fn create_user(db: Data<MongoDBRepo>, new_user: Json<User>) -> impl Respon
         name: new_user.name.to_owned(),
         email: new_user.email.to_owned(),
         password: hashPassword(new_user.password.to_owned()),
+        balance: 0.0,
     };
     let user_details = db.create_user(data).await;
     match user_details {
@@ -69,6 +71,7 @@ pub async fn update_user(db:Data<MongoDBRepo>,path:Path<String>,new_user:Json<Us
         name: new_user.name.to_owned(),
         email: new_user.email.to_owned(),
         password: hashPassword(new_user.password.to_owned()),
+        balance: new_user.balance,
     };
     let user_details = db.update_user(&id,data).await;
     match user_details {
