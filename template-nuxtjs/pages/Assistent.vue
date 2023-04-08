@@ -18,63 +18,100 @@
           </v-list-item>
         </v-list>
       </v-card-text>
-      <div style="display: flex; align-items: center; position: absolute; bottom: 0; width: 95%; margin-left: 10px;">
-        <v-form @submit.prevent="sendMessage" style="flex: 1;">
-          <v-textarea
-            v-model="messageContent"
-            label="Type your message here"
-            :rows="1"
-            auto-grow
-            clearable
-            outlined
-            dense
-            required
-          ></v-textarea>
+      <v-card-actions>
+        <v-form @submit.prevent="sendMessage">
+          <v-textarea v-model="messageContent" label="Type your message here" :rows="1" auto-grow clearable outlined dense
+            required></v-textarea>
+          <v-btn color="primary" type="submit" :disabled="!messageContent.trim()">Send</v-btn>
         </v-form>
-        <v-btn color="primary" type="submit" :disabled="!messageContent.trim()" style="margin-left: 16px; margin-bottom:25px" @click="sendMessage">Send</v-btn>
-      </div>
+      </v-card-actions>
     </v-card>
   </v-app>
 </template>
-
-  <script>
-  import axios from 'axios'
   
-  export default {
-    name: 'AIChatPage',
-    data: () => ({
-      messages: [],
-      messageContent: ''
-    }),
-    methods: {
-      async sendMessage () {
-        if (!this.messageContent.trim()) {
-          return
+<script>
+import axios from 'axios'
+
+export default {
+  name: 'AIChatPage',
+  data: () => ({
+    messages: [],
+    messageContent: ''
+  }),
+  methods: {
+    async queryData(data) {
+      const response = await fetch(
+        "https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill",
+        {
+          headers: { Authorization: "Bearer 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" },
+          method: "POST",
+          body: JSON.stringify(data),
         }
-        this.messages.push({
-          sender: 'user',
-          content: this.messageContent
-        })
-        const response = await this.getResponse(this.messageContent)
-        this.messages.push({
-          sender: 'bot',
-          content: response.data.response
-        })
-        this.messageContent = ''
-      },
-      async getResponse (message) {
-        const postData = {
-          message: message
+      );
+      const result = await response.json();
+      return result;
+    },
+    async sendMessage() {
+      let past_user_inputs = []
+      let generated_responses = []
+      let responses_bot = null;
+
+      // let output = await this.queryData({
+      //   "inputs": {
+      //     "past_user_inputs": [],
+      //     "generated_responses": ["It's Die Hard for sure."],
+      //     "text": "Can you explain why ?"
+      //   }
+      // }).then((response) => {
+      //   console.log(JSON.stringify(response));
+      // });
+      if (!this.messageContent.trim()) {
+        return
+      }
+      this.messages.push({
+        sender: 'user',
+        content: this.messageContent
+      })
+      past_user_inputs.push(this.messageContent)
+      await this.queryData({
+        inputs: {
+          past_user_inputs: past_user_inputs,
+          generated_responses: generated_responses,
+          text: this.messageContent
         }
-        return axios.post('/api/ai-chat', postData)
-      },
+      })
+        .then(response => {
+          responses_bot = response;
+          console.log('Success:', response.conversation.generated_responses[0]);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      this.messages.push({
+        sender: 'bot',
+        content: responses_bot.conversation.generated_responses[0]
+      })
+      console.log(responses_bot)
+      generated_responses.push(responses_bot.conversation.generated_responses[0])
+      this.messageContent = ''
+    },
+    // async getResponse(message) {
+    //   const postData = {
+    //     message: message
+    //   }
+    //   return axios.post('/api/ai-chat', postData)
+    // },
+    logout() {
+      localStorage.removeItem('token')
+      this.$router.push('/login')
     }
   }
-  </script>
+}
+</script>
   
-  <style scoped>
-  .blue-grey {
-    background-color: #B0BEC5 !important;
-  }
-  </style>
+<style scoped>
+.blue-grey {
+  background-color: #B0BEC5 !important;
+}
+</style>
   
