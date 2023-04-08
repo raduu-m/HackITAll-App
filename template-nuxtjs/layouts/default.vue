@@ -133,6 +133,11 @@ export default {
           title: 'Marketplace',
           to: '/marketplace'
         },
+        {
+          icon: 'mdi mdi-chart-bar', //mdi-chart-bubble
+          title: 'Statistics',
+          to: '/statistics'
+        },
       ],
       miniVariant: false,
       right: false,

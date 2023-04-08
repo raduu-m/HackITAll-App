@@ -26,8 +26,8 @@
     </v-card>
   </v-container>
 </template>
+
 <script>
-import QRCode from 'qrcode'
 
 export default {
   data() {
