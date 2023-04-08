@@ -21,7 +21,7 @@
       <v-card-text>
         <v-text-field label="Name" v-model="name"></v-text-field>
         <v-text-field label="Account ID" v-model="accountId"></v-text-field>
-        <v-text-field label="Balance" v-model="balance"></v-text-field>
+        <v-text-field label="Balance (LEI)" v-model="balance"></v-text-field>
       </v-card-text>
     </v-card>
   </v-container>
@@ -34,7 +34,7 @@ export default {
     return {
       name: 'John Doe',
       accountId: '123456',
-      balance: '$500',
+      balance: '500',
       profilePic: ''
     }
   },
