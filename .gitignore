@@ -1,2 +1,5 @@
 rusty-api/target/
 .DS_Store
+
+template-nuxtjs/node_modules/
+template-nuxtjs/.nuxt/
