@@ -138,6 +138,16 @@ export default {
           title: 'Statistics',
           to: '/statistics'
         },
+        {
+          icon: 'mdi-rocket', //mdi-chart-bubble
+          title: 'Stock Market Analysis',
+          to: '/stocks'
+        },
+        {
+          icon: 'mdi-access-point', //mdi-chart-bubble
+          title: 'NFC',
+          to: '/nfc'
+        }
       ],
       miniVariant: false,
       right: false,
