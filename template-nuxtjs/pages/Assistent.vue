@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-card class="elevation-12" style=" height: 750px; max-width: 100%; ">
-      <v-toolbar color="primary" dark>
+      <v-toolbar color="#495B99" dark>
         <v-toolbar-title>Gheorghe</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-toolbar>

@@ -31,24 +31,24 @@
         ads: [
           {
             id: 1,
-            title: 'Vintage Camera',
-            description: 'An old film camera in great condition',
-            price: 120,
-            image: 'https://via.placeholder.com/300x200/ebf8ff/000000?text=Vintage+Camera'
+            title: 'Casti Airpods',
+            description: 'Casti Airpods Pro',
+            price: 500,
+            image: require('@/assets/item1.jpeg')
           },
           {
             id: 2,
-            title: 'Laptop',
-            description: 'A powerful laptop for gaming and work',
-            price: 800,
-            image: 'https://via.placeholder.com/300x200/ebf8ff/000000?text=Laptop'
+            title: 'Mouse Logitech',
+            description: 'Mouse Logitech Mx Master 3',
+            price: 300,
+            image: require('@/assets/item2.jpeg')
           },
           {
             id: 3,
-            title: 'Mountain Bike',
+            title: 'Laptom Microsoft',
             description: 'A high-end mountain bike with full suspension',
             price: 1500,
-            image: 'https://via.placeholder.com/300x200/ebf8ff/000000?text=Mountain+Bike'
+            image: require('@/assets/item3.jpeg')
           }
         ],
         title: '',

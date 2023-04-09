@@ -57,7 +57,7 @@ vuetify: {
       dark: true,
       themes: {
         dark: {
-          primary: '#4caf50',
+          primary: '#495B99',
           secondary: {
             base: '#ff8c00',
             lighten3: '#ffb700',
