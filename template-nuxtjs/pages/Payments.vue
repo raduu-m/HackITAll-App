@@ -6,14 +6,14 @@
       <v-card-title class="text-h5">{{ selectedCategory }}</v-card-title>
       <v-card-text>
         <v-if v-if="selectedCategory === 'Restante' || selectedCategory === 'Campus'">
-          <v-text-field v-model="amount" label="Amount due" outlined dense />
+          <v-text-field v-model="amount" label="Amount due" outlined dense required :rules="[amountRule]"/>
           <v-text-field v-if="selectedPaymentType === 'Student'" v-model="studentId" label="Student ID" outlined dense />
           <v-text-field v-if="selectedPaymentType === 'University'" v-model="paymentNote" label="Payment Note" outlined
             dense />
         </v-if>
         <v-if v-if="selectedCategory === 'Other Payments'">
           <v-select v-model="selectedPaymentType" :items="paymentTypes" label="Payment Type" outlined dense />
-          <v-text-field v-model="amount" label="Amount due" outlined dense />
+          <v-text-field v-model="amount" label="Amount due" outlined dense required :rules="[amountRule]" />
           <v-if v-if="selectedPaymentType === 'Student'">
             <v-text-field v-model="studentId" label="Student ID" outlined dense />
           </v-if>
@@ -67,18 +67,43 @@ export default {
   },
 
   methods: {
+    amountRule(value){
+      if(isNaN(value)){
+        return "Please enter a valid number"
+      }
+      if (parseInt(value) > parseInt(JSON.parse(localStorage.getItem("user")).balance)) {
+            return 'Insufficient funds';
+          } else {
+            return true;
+          }
+    },
     pay() {
       // Implement payment API call here
+
+
+      if (parseInt(this.amount) > parseInt(JSON.parse(localStorage.getItem("user")).balance)) {
+            return 'Insufficient funds';
+          } else {
+           
+          }
       const uid = JSON.parse(localStorage.getItem("user")).id;
       const user = JSON.parse(localStorage.getItem("user"));
       try {
         // send data as json
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}${month}${day}`;
+
         const transaction_j = {
           id: "",
           t1_id: uid,
           t2_id: this.studentId,
           ammount: this.amount,
-          timestamp: "2023020200"
+          timestamp: formattedDate
         };
 
         if (this.selectedCategory === 'Restante') {
@@ -120,7 +145,7 @@ export default {
             t1_id: uid,
             t2_id: this.studentId,
             ammount: parseFloat(this.amount),
-            timestamp: "2023020200"
+            timestamp: formattedDate
           }
         ), {
           headers: {
@@ -167,3 +192,9 @@ export default {
   },
 };
 </script>
+
+<style>
+  .v-messages__message {
+  color: red;
+  }
+  </style>
