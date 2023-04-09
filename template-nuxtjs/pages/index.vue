@@ -6,6 +6,10 @@
       <v-card-text>
         <h2>{{ balance }}</h2>
       </v-card-text>
+      <!--Add a button to go to add funds-->
+      <v-card-actions>
+        <v-btn color="primary" text @click="addFunds">Add Funds</v-btn>
+      </v-card-actions>
     </v-card>
     <v-card>
       <v-card-title>Transaction History</v-card-title>
@@ -52,6 +56,9 @@ export default {
     this.getTransactions()
   },
   methods: {
+    addFunds() {
+      this.$router.push('/addfunds')
+    },
     getTransactions() {
       const monthMap = new Map([
         [1, 'January'],
