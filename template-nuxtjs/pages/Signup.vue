@@ -1,3 +1,6 @@
+
+
+
 <template>
     <v-app>
       <div class="logo-container">
@@ -17,6 +20,7 @@
                       prepend-icon="mdi-account"
                       type="id"
                       required
+                      :rules="[idRule]"
                     ></v-text-field>
                     <v-text-field
                       v-model="name"
@@ -31,6 +35,7 @@
                       prepend-icon="mdi-email"
                       type="email"
                       required
+                      :rules="[emailRule]"
                     ></v-text-field>
                     <v-text-field
                       v-model="password"
@@ -71,9 +76,36 @@
         }
       },
       methods:{
+
+        idRule: (value) => {
+          if (!/^\d{8}$/.test(value)) {
+            return 'ID must be an 8 digit string';
+          } else {
+            return true;
+          }
+        },
+
+        emailRule: (value) => {
+          if (!/@stud.*upb\.ro$/i.test(value)) {
+            return 'email is incorrect';
+          } else {
+            return true;
+          }
+        },
+
         submitForm(){
           try{
             // send data as json
+            const str = this.id;
+            const isEightDigits = /^\d{8}$/.test(str);
+           
+
+            const email = this.email;
+            const hasUpbStudDomain = /@stud.*upb\.ro$/i.test(email);
+            
+
+            if(isEightDigits && hasUpbStudDomain){
+
             const response = this.$axios.$post('/api/user', JSON.stringify(
               {
                 id: this.id,
@@ -108,6 +140,7 @@
 
             // Redirect to the home page
             this.$router.push('/')
+            }
           }catch(err){
             console.log(err)
           }
@@ -122,5 +155,9 @@
     align-items: center;
     justify-content: center;
     margin-top: 50px;
+  }
+
+  .v-messages__message {
+  color: red;
   }
   </style>
