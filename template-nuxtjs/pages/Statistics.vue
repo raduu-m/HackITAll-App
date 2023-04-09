@@ -41,25 +41,25 @@
                         </v-progress-circular>
                     </v-col>
                     <v-col cols="4">
-                        <v-progress-circular :value="25" color="success" size="100" width="10">
-                            <div>{{ 25 }}%</div>
+                        <v-progress-circular :value="sum_sent" color="success" size="100" width="10">
+                            <div>{{ sum_sent }}%</div>
                         </v-progress-circular>
                     </v-col>
                     <v-col cols="4">
-                        <v-progress-circular :value="75" color="warning" size="100" width="10">
-                            <div>{{ 75 }}%</div>
+                        <v-progress-circular :value="sum_received" color="warning" size="100" width="10">
+                            <div>{{ sum_received }}%</div>
                         </v-progress-circular>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col cols="4">
-                        <v-chip color="primary">Category 1</v-chip>
+                        <v-chip color="primary">Overview</v-chip>
                     </v-col>
                     <v-col cols="4">
-                        <v-chip color="success">Category 2</v-chip>
+                        <v-chip color="success">Incomming</v-chip>
                     </v-col>
                     <v-col cols="4">
-                        <v-chip color="warning">Category 3</v-chip>
+                        <v-chip color="warning">Outgoing</v-chip>
                     </v-col>
                 </v-row>
                 <v-divider></v-divider>
